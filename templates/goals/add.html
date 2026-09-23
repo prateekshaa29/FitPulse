@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Goal - FitPulse{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-dark shadow-lg">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-trophy-fill text-warning me-2"></i> Set New Fitness Goal</span>
+                    <a href="{{ url_for('goal.view_goals') }}" class="btn btn-sm btn-outline-custom">View Goals</a>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('goal.add') }}">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="goal_type" class="form-label form-label-dark">Goal Type <span class="text-danger">*</span></label>
+                                <select class="form-select form-select-dark" id="goal_type" name="goal_type" required>
+                                    <option value="">Select Goal Type</option>
+                                    {% for gt in goal_types %}
+                                        <option value="{{ gt }}" {% if goal_type == gt %}selected{% endif %}>{{ gt }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="target_value" class="form-label form-label-dark">Target Metric <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-dark" id="target_value" name="target_value" value="{{ target_value or '' }}" placeholder="e.g. 70 kg, 10 km, 4 days/week" required>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="current_value" class="form-label form-label-dark">Current Baseline</label>
+                                <input type="text" class="form-control form-control-dark" id="current_value" name="current_value" value="{{ current_value or '' }}" placeholder="e.g. 76 kg, 3 km">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="start_date" class="form-label form-label-dark">Start Date</label>
+                                <input type="date" class="form-control form-control-dark" id="start_date" name="start_date" value="{{ start_date or today_date }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="target_date" class="form-label form-label-dark">Target Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control form-control-dark" id="target_date" name="target_date" value="{{ target_date or '' }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="description" class="form-label form-label-dark">Description & Plan</label>
+                            <textarea class="form-control form-control-dark" id="description" name="description" rows="3" placeholder="Why is this goal important? What is your action plan...">{{ description or '' }}</textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ url_for('goal.view_goals') }}" class="btn btn-outline-custom">Cancel</a>
+                            <button type="submit" class="btn btn-emerald">
+                                <i class="bi bi-check2-circle me-1"></i> Save Goal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

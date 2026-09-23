@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - FitPulse{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Welcome Header & Quick Action Buttons -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="text-white fw-bold mb-1">
+                Hello, {{ user.name }} <span class="badge bg-emerald text-dark fw-bold fs-6">User</span>
+            </h2>
+            <p class="text-secondary small mb-0">Here is your daily fitness summary and activity metrics.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('workout.add') }}" class="btn btn-emerald btn-sm">
+                <i class="bi bi-plus-lg me-1"></i> Log Workout
+            </a>
+            <a href="{{ url_for('goal.add') }}" class="btn btn-outline-custom btn-sm">
+                <i class="bi bi-trophy me-1"></i> Add Goal
+            </a>
+            <a href="{{ url_for('weight.add') }}" class="btn btn-outline-custom btn-sm">
+                <i class="bi bi-speedometer me-1"></i> Log Weight
+            </a>
+        </div>
+    </div>
+
+    <!-- Stat Metrics Row -->
+    <div class="row g-3 mb-4">
+        <!-- Metric 1: Workouts -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="stat-label">Total Workouts</div>
+                        <div class="stat-value">{{ total_workouts }}</div>
+                        <small class="text-emerald"><i class="bi bi-calendar-check me-1"></i> {{ weekly_workouts_count }} this week</small>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="bi bi-activity"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric 2: Calories Burned -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card stat-amber">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="stat-label">Calories Burned</div>
+                        <div class="stat-value">{{ "{:,.0f}".format(total_calories) }} <span class="fs-6 text-muted">kcal</span></div>
+                        <small class="text-warning"><i class="bi bi-fire me-1"></i> {{ "{:,.0f}".format(weekly_calories) }} kcal this week</small>
+                    </div>
+                    <div class="stat-icon icon-amber">
+                        <i class="bi bi-fire"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric 3: Time Spent -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card stat-violet">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="stat-label">Active Exercise Time</div>
+                        <div class="stat-value">{{ total_minutes }} <span class="fs-6 text-muted">mins</span></div>
+                        <small class="text-indigo"><i class="bi bi-clock me-1"></i> Total training time</small>
+                    </div>
+                    <div class="stat-icon icon-violet">
+                        <i class="bi bi-stopwatch"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric 4: Weight & BMI -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card stat-rose">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="stat-label">Current Weight / BMI</div>
+                        <div class="stat-value">
+                            {{ user.weight or '--' }} <span class="fs-6 text-muted">kg</span>
+                        </div>
+                        <small>
+                            BMI: <strong class="text-white">{{ bmi or '--' }}</strong>
+                            <span class="badge bg-{{ bmi_color }} ms-1" style="font-size: 0.7rem;">{{ bmi_category }}</span>
+                        </small>
+                    </div>
+                    <div class="stat-icon icon-rose">
+                        <i class="bi bi-heart-pulse"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Row -->
+    <div class="row g-4">
+        
+        <!-- Left Column: Recent Workouts & Recommendations -->
+        <div class="col-lg-8">
+            <!-- Recent Workouts Card -->
+            <div class="card card-dark mb-4">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-clock-history text-cyan me-2"></i> Recent Workouts</span>
+                    <a href="{{ url_for('workout.history') }}" class="btn btn-sm btn-outline-custom">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    {% if latest_workouts %}
+                        <div class="table-responsive">
+                            <table class="table table-dark-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Workout</th>
+                                        <th>Type</th>
+                                        <th>Duration</th>
+                                        <th>Calories</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for w in latest_workouts %}
+                                        <tr>
+                                            <td class="text-secondary">{{ w.workout_date.strftime('%b %d, %Y') }}</td>
+                                            <td class="fw-semibold text-white">
+                                                <i class="bi {{ w.icon }} me-1 text-emerald"></i> {{ w.exercise_name }}
+                                            </td>
+                                            <td><span class="badge bg-secondary">{{ w.workout_type }}</span></td>
+                                            <td>{{ w.duration }} mins</td>
+                                            <td class="text-warning">{{ "{:,.0f}".format(w.calories_burned) }} kcal</td>
+                                            <td class="text-end">
+                                                <a href="{{ url_for('workout.edit', workout_id=w.id) }}" class="btn btn-sm btn-outline-secondary py-0 px-2" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-clipboard2-plus fs-1 text-muted d-block mb-2"></i>
+                            <p class="text-secondary mb-3">No workouts recorded yet.</p>
+                            <a href="{{ url_for('workout.add') }}" class="btn btn-emerald btn-sm">Log Your First Workout</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Specialist Recommendations Received -->
+            {% if recommendations %}
+                <div class="card card-dark">
+                    <div class="card-header card-header-dark">
+                        <span class="text-white fw-bold"><i class="bi bi-chat-quote-fill text-emerald me-2"></i> Specialist Guidance & Advice</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            {% for rec in recommendations %}
+                                <div class="col-md-6">
+                                    <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color);">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="badge bg-{{ rec.badge_color }}">{{ rec.note_type }}</span>
+                                            <small class="text-muted">{{ rec.created_at.strftime('%b %d, %Y') }}</small>
+                                        </div>
+                                        <h6 class="text-white fw-bold mb-1">{{ rec.title }}</h6>
+                                        <p class="text-secondary small mb-2">{{ rec.content }}</p>
+                                        <small class="text-muted"><i class="bi bi-person-check me-1"></i> From: {{ rec.author.name }} ({{ rec.author.role|capitalize }})</small>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Goals & Weight Overview -->
+        <div class="col-lg-4">
+            <!-- Active Goals Card -->
+            <div class="card card-dark mb-4">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-trophy-fill text-warning me-2"></i> Active Goals</span>
+                    <a href="{{ url_for('goal.view_goals') }}" class="btn btn-sm btn-outline-custom">Manage</a>
+                </div>
+                <div class="card-body">
+                    {% if active_goals %}
+                        <div class="d-flex flex-column gap-3">
+                            {% for g in active_goals %}
+                                <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border-color);">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <h6 class="text-white fw-bold mb-0">{{ g.goal_type }}</h6>
+                                        <span class="badge bg-primary">{{ g.target_value }}</span>
+                                    </div>
+                                    <p class="text-secondary small mb-2">{{ g.description or 'No description provided' }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">Target: {{ g.target_date.strftime('%b %d, %Y') }}</small>
+                                        <form method="POST" action="{{ url_for('goal.toggle_status', goal_id=g.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-success py-0 px-2" title="Mark as Completed">
+                                                <i class="bi bi-check2"></i> Done
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-flag fs-2 text-muted d-block mb-2"></i>
+                            <p class="text-secondary small mb-3">No active goals currently set.</p>
+                            <a href="{{ url_for('goal.add') }}" class="btn btn-outline-custom btn-sm">Set a Goal</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Weight Logs Card -->
+            <div class="card card-dark">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-speedometer text-info me-2"></i> Weight Logs</span>
+                    <a href="{{ url_for('weight.history') }}" class="btn btn-sm btn-outline-custom">History</a>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_weights %}
+                        <div class="table-responsive">
+                            <table class="table table-dark-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Weight</th>
+                                        <th class="text-end">BMI</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for rw in recent_weights %}
+                                        <tr>
+                                            <td class="text-secondary small">{{ rw.date.strftime('%b %d') }}</td>
+                                            <td class="fw-bold text-white">{{ rw.weight }} kg</td>
+                                            <td class="text-end">
+                                                <span class="badge bg-secondary">{{ rw.bmi_for_height(user.height) or '--' }}</span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <p class="text-secondary small mb-2">No weight history logged.</p>
+                            <a href="{{ url_for('weight.add') }}" class="btn btn-outline-custom btn-sm">Add Weight</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

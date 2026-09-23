@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Goal - FitPulse{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-dark shadow-lg">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-pencil-square text-cyan me-2"></i> Edit Fitness Goal</span>
+                    <a href="{{ url_for('goal.view_goals') }}" class="btn btn-sm btn-outline-custom">Back to Goals</a>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('goal.edit', goal_id=goal.id) }}">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="goal_type" class="form-label form-label-dark">Goal Type <span class="text-danger">*</span></label>
+                                <select class="form-select form-select-dark" id="goal_type" name="goal_type" required>
+                                    {% for gt in goal_types %}
+                                        <option value="{{ gt }}" {% if goal.goal_type == gt %}selected{% endif %}>{{ gt }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="target_value" class="form-label form-label-dark">Target Value <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-dark" id="target_value" name="target_value" value="{{ goal.target_value }}" required>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="current_value" class="form-label form-label-dark">Current Value</label>
+                                <input type="text" class="form-control form-control-dark" id="current_value" name="current_value" value="{{ goal.current_value or '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="status" class="form-label form-label-dark">Status</label>
+                                <select class="form-select form-select-dark" id="status" name="status">
+                                    <option value="ACTIVE" {% if goal.status == 'ACTIVE' %}selected{% endif %}>ACTIVE</option>
+                                    <option value="COMPLETED" {% if goal.status == 'COMPLETED' %}selected{% endif %}>COMPLETED</option>
+                                    <option value="EXPIRED" {% if goal.status == 'EXPIRED' %}selected{% endif %}>EXPIRED</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="start_date" class="form-label form-label-dark">Start Date</label>
+                                <input type="date" class="form-control form-control-dark" id="start_date" name="start_date" value="{{ goal.start_date.strftime('%Y-%m-%d') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="target_date" class="form-label form-label-dark">Target Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control form-control-dark" id="target_date" name="target_date" value="{{ goal.target_date.strftime('%Y-%m-%d') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="description" class="form-label form-label-dark">Description</label>
+                            <textarea class="form-control form-control-dark" id="description" name="description" rows="3">{{ goal.description or '' }}</textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button type="button" class="btn btn-outline-danger btn-delete-trigger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-action="{{ url_for('goal.delete', goal_id=goal.id) }}" data-name="{{ goal.goal_type }}">
+                                <i class="bi bi-trash me-1"></i> Delete
+                            </button>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('goal.view_goals') }}" class="btn btn-outline-custom">Cancel</a>
+                                <button type="submit" class="btn btn-emerald">
+                                    <i class="bi bi-floppy me-1"></i> Update Goal
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Weight Entry - FitPulse{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card card-dark shadow-lg">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-pencil-square text-cyan me-2"></i> Edit Weight Record</span>
+                    <a href="{{ url_for('weight.history') }}" class="btn btn-sm btn-outline-custom">History</a>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('weight.edit', record_id=record.id) }}">
+                        <div class="mb-3">
+                            <label for="weight" class="form-label form-label-dark">Weight (kg) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" step="0.1" class="form-control form-control-dark" id="weight" name="weight" value="{{ record.weight }}" min="20" max="400" required>
+                                <span class="input-group-text bg-dark border-secondary text-secondary">kg</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="date" class="form-label form-label-dark">Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control form-control-dark" id="date" name="date" value="{{ record.date.strftime('%Y-%m-%d') }}" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="notes" class="form-label form-label-dark">Notes</label>
+                            <input type="text" class="form-control form-control-dark" id="notes" name="notes" value="{{ record.notes or '' }}">
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button type="button" class="btn btn-outline-danger btn-delete-trigger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-action="{{ url_for('weight.delete', record_id=record.id) }}" data-name="{{ record.weight }} kg on {{ record.date.strftime('%Y-%m-%d') }}">
+                                <i class="bi bi-trash me-1"></i> Delete
+                            </button>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('weight.history') }}" class="btn btn-outline-custom">Cancel</a>
+                                <button type="submit" class="btn btn-emerald">
+                                    <i class="bi bi-floppy me-1"></i> Update
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

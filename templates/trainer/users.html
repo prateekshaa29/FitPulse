@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Client Directory - Trainer Portal{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="text-white fw-bold mb-1"><i class="bi bi-people text-primary me-2"></i> Client Directory</h2>
+            <p class="text-secondary small mb-0">Select a client to review workout logs, inspect goals, and provide personalized training advice.</p>
+        </div>
+        <a href="{{ url_for('trainer.dashboard') }}" class="btn btn-outline-custom">
+            <i class="bi bi-arrow-left me-1"></i> Trainer Dashboard
+        </a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="card card-dark mb-4 p-3">
+        <form method="GET" action="{{ url_for('trainer.list_users') }}" class="row g-2">
+            <div class="col-md-9">
+                <div class="input-group">
+                    <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control form-control-dark" name="search" value="{{ search }}" placeholder="Search client by name or email...">
+                </div>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-emerald flex-grow-1">Search</button>
+                <a href="{{ url_for('trainer.list_users') }}" class="btn btn-outline-custom">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Clients Grid -->
+    {% if clients %}
+        <div class="row g-4">
+            {% for c in clients %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card card-dark h-100 p-4 card-dark-hover d-flex flex-column">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">
+                                <i class="bi bi-person-fill fs-3"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white fw-bold mb-0">{{ c.name }}</h5>
+                                <small class="text-secondary">{{ c.email }}</small>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-3 mb-3 flex-grow-1" style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color);">
+                            <div class="row g-2 text-center">
+                                <div class="col-4">
+                                    <small class="text-muted d-block">Workouts</small>
+                                    <strong class="text-white">{{ c.workouts|length }}</strong>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted d-block">Weight</small>
+                                    <strong class="text-white">{{ c.weight or '--' }} kg</strong>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted d-block">BMI</small>
+                                    <strong class="text-cyan">{{ c.bmi or '--' }}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="{{ url_for('trainer.user_detail', user_id=c.id) }}" class="btn btn-emerald w-100">
+                            <i class="bi bi-eye me-1"></i> View Client Details
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card card-dark text-center py-5">
+            <p class="text-secondary mb-0">No client records found matching your search.</p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

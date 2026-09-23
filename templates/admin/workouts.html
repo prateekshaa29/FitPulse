@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Workout Management - Admin Portal{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="text-white fw-bold mb-1"><i class="bi bi-activity text-cyan me-2"></i> Global Workout Management</h2>
+            <p class="text-secondary small mb-0">View and audit all workout sessions recorded across all platform users.</p>
+        </div>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-custom">
+            <i class="bi bi-arrow-left me-1"></i> Admin Dashboard
+        </a>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card card-dark mb-4 p-3">
+        <form method="GET" action="{{ url_for('admin.list_workouts') }}" class="row g-2">
+            <div class="col-md-9">
+                <input type="text" class="form-control form-control-dark" name="type" value="{{ workout_type }}" placeholder="Filter by workout type (e.g. Running, Strength Training)...">
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-emerald flex-grow-1">Filter</button>
+                <a href="{{ url_for('admin.list_workouts') }}" class="btn btn-outline-custom">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="card card-dark shadow-sm">
+        <div class="card-body p-0">
+            {% if workouts %}
+                <div class="table-responsive">
+                    <table class="table table-dark-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Exercise</th>
+                                <th>Duration</th>
+                                <th>Calories</th>
+                                <th>Notes</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for w in workouts %}
+                                <tr>
+                                    <td class="text-secondary">#{{ w.id }}</td>
+                                    <td class="fw-bold text-white">{{ w.user.name }} ({{ w.user.email }})</td>
+                                    <td class="text-secondary">{{ w.workout_date.strftime('%Y-%m-%d') }}</td>
+                                    <td><span class="badge bg-secondary">{{ w.workout_type }}</span></td>
+                                    <td class="text-emerald">{{ w.exercise_name }}</td>
+                                    <td>{{ w.duration }} min</td>
+                                    <td class="text-warning">{{ "{:,.0f}".format(w.calories_burned) }} kcal</td>
+                                    <td class="text-secondary small">{{ w.notes or '-' }}</td>
+                                    <td class="text-end">
+                                        <button type="button" class="btn btn-sm btn-outline-danger btn-delete-trigger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-action="{{ url_for('admin.delete_workout', workout_id=w.id) }}" data-name="Workout #{{ w.id }} ({{ w.exercise_name }})">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <p class="text-secondary mb-0">No workout records found.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

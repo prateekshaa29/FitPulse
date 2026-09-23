@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Log In - FitPulse{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+            <div class="card card-dark p-4 p-md-5 shadow-lg border-highlight">
+                <div class="text-center mb-4">
+                    <div class="stat-icon mx-auto mb-3" style="width: 56px; height: 56px; font-size: 1.6rem;">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <h3 class="fw-bold text-white mb-1">Welcome Back</h3>
+                    <p class="text-secondary small">Enter your credentials to access your fitness dashboard</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('auth.login') }}">
+                    <div class="mb-3">
+                        <label for="email" class="form-label form-label-dark">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-envelope"></i></span>
+                            <input type="email" class="form-control form-control-dark" id="email" name="email" value="{{ email or '' }}" placeholder="name@example.com" required autofocus>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label form-label-dark">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-key"></i></span>
+                            <input type="password" class="form-control form-control-dark" id="password" name="password" placeholder="Enter your password" required>
+                            <button type="button" class="btn btn-outline-custom toggle-password-btn" data-target="password" type="button">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-emerald w-100 py-2 mb-3">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Log In
+                    </button>
+                </form>
+
+                <div class="text-center mt-3 pt-3 border-top" style="border-color: var(--border-color) !important;">
+                    <p class="text-secondary small mb-0">
+                        Don't have an account yet? 
+                        <a href="{{ url_for('auth.register') }}" class="text-emerald fw-semibold text-decoration-none">Sign Up</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Demo Helper Accordion -->
+            <div class="card card-dark mt-4 p-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <span class="small text-secondary"><i class="bi bi-info-circle text-cyan me-1"></i> Quick Test Credentials:</span>
+                    <button class="btn btn-sm btn-outline-custom" type="button" data-bs-toggle="collapse" data-bs-target="#demoAccounts">
+                        View Demo Logins
+                    </button>
+                </div>
+                <div class="collapse mt-3" id="demoAccounts">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-dark-custom mb-0 small">
+                            <thead>
+                                <tr><th>Role</th><th>Email</th><th>Password</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><span class="badge bg-success">User</span></td><td>user@fitness.com</td><td>User@123</td></tr>
+                                <tr><td><span class="badge bg-primary">Trainer</span></td><td>trainer@fitness.com</td><td>Trainer@123</td></tr>
+                                <tr><td><span class="badge bg-warning text-dark">Nutritionist</span></td><td>nutritionist@fitness.com</td><td>Nutritionist@123</td></tr>
+                                <tr><td><span class="badge bg-danger">Admin</span></td><td>admin@fitness.com</td><td>Admin@123</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

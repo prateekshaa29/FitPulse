@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Progress & Analytics - FitPulse{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4" id="progressDashboardContainer">
+
+    <!-- Header & Range Filter Buttons -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="text-white fw-bold mb-1"><i class="bi bi-graph-up-arrow text-emerald me-2"></i> Progress Analytics</h2>
+            <p class="text-secondary small mb-0">Visualize your fitness journey, weight trends, and workout consistency over time.</p>
+        </div>
+        
+        <!-- Range Filter Buttons -->
+        <div class="btn-group shadow-sm" role="group">
+            <button type="button" class="btn btn-outline-custom progress-range-btn" data-days="7">7 Days</button>
+            <button type="button" class="btn btn-emerald progress-range-btn active" data-days="30">30 Days</button>
+            <button type="button" class="btn btn-outline-custom progress-range-btn" data-days="90">90 Days</button>
+            <button type="button" class="btn btn-outline-custom progress-range-btn" data-days="all">All Time</button>
+        </div>
+    </div>
+
+    <!-- Analytics Charts Grid -->
+    <div class="row g-4 mb-4">
+
+        <!-- Chart 1: Weight History Progression -->
+        <div class="col-lg-6">
+            <div class="card card-dark h-100">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-speedometer2 text-emerald me-2"></i> Weight Progression (kg)</span>
+                    <span class="spinner-border spinner-border-sm text-emerald chart-spinner d-none" role="status"></span>
+                </div>
+                <div class="card-body" style="min-height: 320px; position: relative;">
+                    <canvas id="weightProgressChart"></canvas>
+                    <div id="weightEmptyNotice" class="text-center py-5 d-none">
+                        <i class="bi bi-clipboard2-data fs-1 text-muted d-block mb-2"></i>
+                        <p class="text-secondary small mb-2">No weight entries recorded in this time range.</p>
+                        <a href="{{ url_for('weight.add') }}" class="btn btn-sm btn-outline-custom">Log Weight Entry</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart 2: Workout Activity & Calories Burned -->
+        <div class="col-lg-6">
+            <div class="card card-dark h-100">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-activity text-cyan me-2"></i> Workout Duration & Calories</span>
+                    <span class="spinner-border spinner-border-sm text-cyan chart-spinner d-none" role="status"></span>
+                </div>
+                <div class="card-body" style="min-height: 320px; position: relative;">
+                    <canvas id="workoutProgressChart"></canvas>
+                    <div id="workoutEmptyNotice" class="text-center py-5 d-none">
+                        <i class="bi bi-activity fs-1 text-muted d-block mb-2"></i>
+                        <p class="text-secondary small mb-2">No workout sessions logged in this timeframe.</p>
+                        <a href="{{ url_for('workout.add') }}" class="btn btn-sm btn-emerald">Log a Workout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart 3: Workout Distribution by Type -->
+        <div class="col-lg-6">
+            <div class="card card-dark h-100">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-pie-chart-fill text-indigo me-2"></i> Workout Type Breakdown</span>
+                    <span class="spinner-border spinner-border-sm text-indigo chart-spinner d-none" role="status"></span>
+                </div>
+                <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 300px; position: relative;">
+                    <canvas id="workoutTypeChart"></canvas>
+                    <div id="typeEmptyNotice" class="text-center py-5 d-none">
+                        <i class="bi bi-pie-chart fs-1 text-muted d-block mb-2"></i>
+                        <p class="text-secondary small mb-0">No workout types logged yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart 4: Goal Status Distribution -->
+        <div class="col-lg-6">
+            <div class="card card-dark h-100">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-trophy-fill text-warning me-2"></i> Goal Completion Status</span>
+                    <span class="spinner-border spinner-border-sm text-warning chart-spinner d-none" role="status"></span>
+                </div>
+                <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 300px; position: relative;">
+                    <canvas id="goalStatusChart"></canvas>
+                    <div id="goalEmptyNotice" class="text-center py-5 d-none">
+                        <i class="bi bi-trophy fs-1 text-muted d-block mb-2"></i>
+                        <p class="text-secondary small mb-2">No fitness goals found.</p>
+                        <a href="{{ url_for('goal.add') }}" class="btn btn-sm btn-outline-custom">Create Goal</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<!-- Dynamic Analytics Logic -->
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}

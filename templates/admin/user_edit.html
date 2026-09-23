@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit User #{{ user.id }} - Admin Portal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-dark shadow-lg">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-pencil-square text-cyan me-2"></i> Edit User: {{ user.name }}</span>
+                    <a href="{{ url_for('admin.list_users') }}" class="btn btn-sm btn-outline-custom">Back to Users</a>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('admin.edit_user', user_id=user.id) }}">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label form-label-dark">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-dark" id="name" name="name" value="{{ user.name }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label form-label-dark">Email Address <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control form-control-dark" id="email" name="email" value="{{ user.email }}" required>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="role" class="form-label form-label-dark">Role Authorization <span class="text-danger">*</span></label>
+                                <select class="form-select form-select-dark" id="role" name="role" required>
+                                    <option value="user" {% if user.role == 'user' %}selected{% endif %}>User (Client)</option>
+                                    <option value="trainer" {% if user.role == 'trainer' %}selected{% endif %}>Trainer</option>
+                                    <option value="nutritionist" {% if user.role == 'nutritionist' %}selected{% endif %}>Nutritionist</option>
+                                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Administrator</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="new_password" class="form-label form-label-dark">Reset Password (Leave blank to keep current)</label>
+                                <input type="password" class="form-control form-control-dark" id="new_password" name="new_password" placeholder="New password (optional)">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="gender" class="form-label form-label-dark">Gender</label>
+                                <select class="form-select form-select-dark" id="gender" name="gender">
+                                    <option value="" {% if not user.gender %}selected{% endif %}>Select Gender</option>
+                                    <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+                                    <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
+                                    <option value="Other" {% if user.gender == 'Other' %}selected{% endif %}>Other</option>
+                                    <option value="Prefer not to say" {% if user.gender == 'Prefer not to say' %}selected{% endif %}>Prefer not to say</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="age" class="form-label form-label-dark">Age (years)</label>
+                                <input type="number" class="form-control form-control-dark" id="age" name="age" value="{{ user.age or '' }}" min="5" max="120">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="height" class="form-label form-label-dark">Height (cm)</label>
+                                <input type="number" step="0.1" class="form-control form-control-dark" id="height" name="height" value="{{ user.height or '' }}" min="50" max="260">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="weight" class="form-label form-label-dark">Weight (kg)</label>
+                                <input type="number" step="0.1" class="form-control form-control-dark" id="weight" name="weight" value="{{ user.weight or '' }}" min="20" max="400">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            {% if user.id != current_user.id %}
+                                <button type="button" class="btn btn-outline-danger btn-delete-trigger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-action="{{ url_for('admin.delete_user', user_id=user.id) }}" data-name="User {{ user.name }}">
+                                    <i class="bi bi-trash me-1"></i> Delete User
+                                </button>
+                            {% else %}
+                                <div></div>
+                            {% endif %}
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('admin.list_users') }}" class="btn btn-outline-custom">Cancel</a>
+                                <button type="submit" class="btn btn-emerald">
+                                    <i class="bi bi-floppy me-1"></i> Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

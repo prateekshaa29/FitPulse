@@ -1,0 +1,14 @@
+{
+    "include": [
+        "."
+    ],
+    "extraPaths": [
+        "."
+    ],
+    "typeCheckingMode": "basic",
+    "reportAttributeAccessIssue": "none",
+    "reportOptionalMemberAccess": "none",
+    "reportGeneralTypeIssues": "none",
+    "reportMissingImports": "none",
+    "reportUnknownMemberType": "none"
+}

@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}FitPulse - Modern Fitness & Workout Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-5">
+    
+    <!-- Hero Section -->
+    <section class="hero-section text-center py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <span class="badge bg-emerald text-dark fw-bold px-3 py-2 rounded-pill mb-3" style="background: var(--gradient-emerald);">
+                    <i class="bi bi-stars"></i> Intelligent Fitness Ecosystem
+                </span>
+                <h1 class="hero-title text-white">
+                    Transform Your Fitness Journey With <span style="background: var(--gradient-emerald); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Precision Tracking</span>
+                </h1>
+                <p class="hero-subtitle mx-auto">
+                    Seamlessly record daily workouts, track body weight trends, calculate dynamic BMI, set ambitious fitness goals, and receive professional guidance from trainers and nutritionists.
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-emerald btn-lg px-4 py-3">
+                        <i class="bi bi-rocket-takeoff-fill me-2"></i> Get Started Free
+                    </a>
+                    <a href="{{ url_for('bmi.view_calculator') }}" class="btn btn-outline-custom btn-lg px-4 py-3">
+                        <i class="bi bi-calculator me-2"></i> Calculate BMI
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Features Grid -->
+    <section id="features" class="py-5">
+        <div class="text-center mb-5">
+            <h6 class="text-emerald text-uppercase fw-bold letter-spacing-1">Features</h6>
+            <h2 class="text-white fw-bold">Everything You Need to Reach Your Peak</h2>
+        </div>
+
+        <div class="row g-4">
+            <!-- Feature 1 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-dark card-dark-hover h-100 p-4">
+                    <div class="feature-icon-box bg-emerald text-dark" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">
+                        <i class="bi bi-activity"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-2">Workout Tracking</h5>
+                    <p class="text-secondary small mb-0">Log running, strength, cycling, yoga, and HIIT sessions with duration, sets, reps, and calories burned.</p>
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-dark card-dark-hover h-100 p-4">
+                    <div class="feature-icon-box" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-indigo);">
+                        <i class="bi bi-trophy-fill"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-2">Goal Management</h5>
+                    <p class="text-secondary small mb-0">Set customized targets for weight loss, muscle gain, running mileage, or workout frequency with target dates.</p>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-dark card-dark-hover h-100 p-4">
+                    <div class="feature-icon-box" style="background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan);">
+                        <i class="bi bi-speedometer2"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-2">Weight & BMI Logs</h5>
+                    <p class="text-secondary small mb-0">Log your weight over time, view historical trends, and calculate precise WHO-standard BMI classifications.</p>
+                </div>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-dark card-dark-hover h-100 p-4">
+                    <div class="feature-icon-box" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-2">Visual Analytics</h5>
+                    <p class="text-secondary small mb-0">Interactive Chart.js visual analytics for weight trajectories, workout intensity, and goal completion rates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Multi-Role Specialist Ecosystem -->
+    <section id="roles" class="py-5 border-top" style="border-color: var(--border-color) !important;">
+        <div class="text-center mb-5">
+            <h6 class="text-cyan text-uppercase fw-bold letter-spacing-1">Ecosystem</h6>
+            <h2 class="text-white fw-bold">Built for Athletes & Professionals</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card card-dark p-4 h-100 border-start border-3 border-success">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <i class="bi bi-person-fill fs-2 text-success"></i>
+                        <div>
+                            <h5 class="text-white fw-bold mb-0">Fitness Users</h5>
+                            <small class="text-muted">Self-directed tracking</small>
+                        </div>
+                    </div>
+                    <p class="text-secondary small">Maintain workout history, log weekly weight, monitor personal BMI, and track milestones with real-time feedback.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card card-dark p-4 h-100 border-start border-3 border-primary">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <i class="bi bi-person-workspace fs-2 text-primary"></i>
+                        <div>
+                            <h5 class="text-white fw-bold mb-0">Certified Trainers</h5>
+                            <small class="text-muted">Workout guidance</small>
+                        </div>
+                    </div>
+                    <p class="text-secondary small">Inspect client exercise logs, monitor consistency, and prescribe structured workout guidance notes directly.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card card-dark p-4 h-100 border-start border-3 border-warning">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <i class="bi bi-egg-fried fs-2 text-warning"></i>
+                        <div>
+                            <h5 class="text-white fw-bold mb-0">Clinical Nutritionists</h5>
+                            <small class="text-muted">Dietary optimization</small>
+                        </div>
+                    </div>
+                    <p class="text-secondary small">Analyze client weight progression, BMI classifications, and deliver tailored meal & nutrition advice.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="my-5 p-5 card-dark rounded-4 text-center text-white" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.9) 100%); border: 1px solid var(--border-highlight);">
+        <h2 class="fw-bold mb-3">Ready to Take Control of Your Health?</h2>
+        <p class="text-secondary mx-auto mb-4" style="max-width: 550px;">
+            Join thousands of users tracking their strength, cardio, weight, and wellness goals on FitPulse today.
+        </p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-emerald btn-lg px-4">
+            <i class="bi bi-person-plus-fill me-2"></i> Create Free Account
+        </a>
+    </section>
+
+</div>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Workout History - FitPulse{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Header & Action Button -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="text-white fw-bold mb-1"><i class="bi bi-clock-history text-cyan me-2"></i> Workout History</h2>
+            <p class="text-secondary small mb-0">Browse and manage your historical exercise sessions.</p>
+        </div>
+        <a href="{{ url_for('workout.add') }}" class="btn btn-emerald">
+            <i class="bi bi-plus-lg me-1"></i> Log New Workout
+        </a>
+    </div>
+
+    <!-- Summary Metrics -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-4">
+            <div class="stat-card">
+                <div class="stat-label">Total Workouts</div>
+                <div class="stat-value">{{ total_workouts }}</div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="stat-card stat-violet">
+                <div class="stat-label">Total Duration</div>
+                <div class="stat-value">{{ total_duration }} <span class="fs-6 text-muted">mins</span></div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="stat-card stat-amber">
+                <div class="stat-label">Total Calories</div>
+                <div class="stat-value">{{ "{:,.0f}".format(total_calories) }} <span class="fs-6 text-muted">kcal</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="card card-dark mb-4 p-3">
+        <form method="GET" action="{{ url_for('workout.history') }}" class="row g-2 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control form-control-dark" name="search" value="{{ search_query }}" placeholder="Search exercise or notes...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select form-select-dark" name="type">
+                    <option value="">All Workout Types</option>
+                    {% for wt in workout_types %}
+                        <option value="{{ wt }}" {% if selected_type == wt %}selected{% endif %}>{{ wt }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-emerald flex-grow-1">Filter</button>
+                <a href="{{ url_for('workout.history') }}" class="btn btn-outline-custom">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Workout History Table -->
+    <div class="card card-dark shadow-sm">
+        <div class="card-body p-0">
+            {% if workouts %}
+                <div class="table-responsive">
+                    <table class="table table-dark-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Exercise</th>
+                                <th>Duration</th>
+                                <th>Sets</th>
+                                <th>Reps</th>
+                                <th>Calories</th>
+                                <th>Notes</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for w in workouts %}
+                                <tr>
+                                    <td class="text-secondary">{{ w.workout_date.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            <i class="bi {{ w.icon }} me-1"></i> {{ w.workout_type }}
+                                        </span>
+                                    </td>
+                                    <td class="fw-bold text-white">{{ w.exercise_name }}</td>
+                                    <td>{{ w.duration }} mins</td>
+                                    <td>{{ w.sets or '-' }}</td>
+                                    <td>{{ w.repetitions or '-' }}</td>
+                                    <td class="text-warning fw-semibold">{{ "{:,.0f}".format(w.calories_burned) }} kcal</td>
+                                    <td class="text-secondary small" style="max-width: 200px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                                        {{ w.notes or '-' }}
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('workout.edit', workout_id=w.id) }}" class="btn btn-outline-secondary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger btn-delete-trigger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-action="{{ url_for('workout.delete', workout_id=w.id) }}" data-name="{{ w.exercise_name }} on {{ w.workout_date.strftime('%Y-%m-%d') }}">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-journal-x fs-1 text-muted d-block mb-2"></i>
+                    <h5 class="text-white">No workouts found</h5>
+                    <p class="text-secondary small mb-3">Try adjusting your filter criteria or log a new workout.</p>
+                    <a href="{{ url_for('workout.add') }}" class="btn btn-emerald btn-sm">Log New Workout</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - FitPulse{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="text-white fw-bold mb-1">
+                System Administration <span class="badge bg-danger fs-6">Admin</span>
+            </h2>
+            <p class="text-secondary small mb-0">Platform overview, user management, and global database monitoring.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('admin.create_user') }}" class="btn btn-emerald btn-sm">
+                <i class="bi bi-person-plus-fill me-1"></i> Create User
+            </a>
+            <a href="{{ url_for('admin.list_users') }}" class="btn btn-outline-custom btn-sm">
+                <i class="bi bi-people me-1"></i> Manage Users
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Metrics -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-label">Total Users</div>
+                <div class="stat-value">{{ total_users }}</div>
+                <small class="text-secondary">{{ users_by_role['user'] }} Clients &bull; {{ users_by_role['trainer'] }} Trainers &bull; {{ users_by_role['nutritionist'] }} Nutritionists</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card stat-violet">
+                <div class="stat-label">Total Workouts</div>
+                <div class="stat-value">{{ total_workouts }}</div>
+                <small class="text-indigo">Logged platform-wide</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card stat-amber">
+                <div class="stat-label">Total Goals</div>
+                <div class="stat-value">{{ total_goals }}</div>
+                <small class="text-warning">Active &amp; completed goals</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card stat-rose">
+                <div class="stat-label">Weight Records</div>
+                <div class="stat-value">{{ total_weights }}</div>
+                <small class="text-rose">Body metrics logged</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Navigation Management Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <a href="{{ url_for('admin.list_users') }}" class="card card-dark card-dark-hover p-3 text-decoration-none d-block">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">
+                        <i class="bi bi-person-gear"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white fw-bold mb-0">User Management</h6>
+                        <small class="text-secondary">{{ total_users }} registered</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('admin.list_workouts') }}" class="card card-dark card-dark-hover p-3 text-decoration-none d-block">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon icon-violet">
+                        <i class="bi bi-activity"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white fw-bold mb-0">Workout Records</h6>
+                        <small class="text-secondary">{{ total_workouts }} entries</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('admin.list_goals') }}" class="card card-dark card-dark-hover p-3 text-decoration-none d-block">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon icon-amber">
+                        <i class="bi bi-trophy"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white fw-bold mb-0">Fitness Goals</h6>
+                        <small class="text-secondary">{{ total_goals }} tracked</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('admin.list_weights') }}" class="card card-dark card-dark-hover p-3 text-decoration-none d-block">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="stat-icon icon-rose">
+                        <i class="bi bi-speedometer"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-white fw-bold mb-0">Weight Logs</h6>
+                        <small class="text-secondary">{{ total_weights }} entries</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent System Activity -->
+    <div class="row g-4">
+        <!-- Recent Users Registered -->
+        <div class="col-lg-6">
+            <div class="card card-dark">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-person-plus text-emerald me-2"></i> Recent Registrations</span>
+                    <a href="{{ url_for('admin.list_users') }}" class="btn btn-sm btn-outline-custom">All Users</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark-custom mb-0">
+                            <thead>
+                                <tr><th>User</th><th>Email</th><th>Role</th><th class="text-end">Registered</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for u in recent_users %}
+                                    <tr>
+                                        <td class="fw-bold text-white">{{ u.name }}</td>
+                                        <td class="text-secondary small">{{ u.email }}</td>
+                                        <td><span class="badge bg-secondary">{{ u.role }}</span></td>
+                                        <td class="text-end text-secondary small">{{ u.created_at.strftime('%b %d, %Y') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Workouts Logged Platform-wide -->
+        <div class="col-lg-6">
+            <div class="card card-dark">
+                <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                    <span class="text-white fw-bold"><i class="bi bi-activity text-cyan me-2"></i> Recent Workouts (Global)</span>
+                    <a href="{{ url_for('admin.list_workouts') }}" class="btn btn-sm btn-outline-custom">All Workouts</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark-custom mb-0">
+                            <thead>
+                                <tr><th>User</th><th>Exercise</th><th>Type</th><th>Duration</th><th class="text-end">Date</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for w in recent_workouts %}
+                                    <tr>
+                                        <td class="text-white">{{ w.user.name }}</td>
+                                        <td class="text-emerald fw-semibold">{{ w.exercise_name }}</td>
+                                        <td><span class="badge bg-secondary">{{ w.workout_type }}</span></td>
+                                        <td class="text-secondary">{{ w.duration }} mins</td>
+                                        <td class="text-end text-secondary small">{{ w.workout_date.strftime('%b %d') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

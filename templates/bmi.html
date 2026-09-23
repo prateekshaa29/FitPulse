@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}Interactive BMI Calculator - FitPulse{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4">
+
+        <!-- Left Column: Interactive Calculator -->
+        <div class="col-lg-7">
+            <div class="card card-dark p-4 shadow-lg">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="stat-icon" style="background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan);">
+                        <i class="bi bi-calculator-fill fs-3"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-white fw-bold mb-0">Body Mass Index (BMI) Calculator</h4>
+                        <p class="text-secondary small mb-0">Calculate your BMI using World Health Organization (WHO) standards.</p>
+                    </div>
+                </div>
+
+                <!-- Sliders & Inputs -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="bmiHeightInput" class="form-label form-label-dark mb-0">Height (cm)</label>
+                        <div class="input-group" style="width: 140px;">
+                            <input type="number" class="form-control form-control-dark text-end" id="bmiHeightInput" value="{{ initial_height }}" min="80" max="250" step="0.5">
+                            <span class="input-group-text bg-dark border-secondary text-secondary">cm</span>
+                        </div>
+                    </div>
+                    <input type="range" class="form-range" id="bmiHeightSlider" min="100" max="230" step="0.5" value="{{ initial_height }}">
+                </div>
+
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="bmiWeightInput" class="form-label form-label-dark mb-0">Weight (kg)</label>
+                        <div class="input-group" style="width: 140px;">
+                            <input type="number" class="form-control form-control-dark text-end" id="bmiWeightInput" value="{{ initial_weight }}" min="30" max="250" step="0.5">
+                            <span class="input-group-text bg-dark border-secondary text-secondary">kg</span>
+                        </div>
+                    </div>
+                    <input type="range" class="form-range" id="bmiWeightSlider" min="30" max="180" step="0.5" value="{{ initial_weight }}">
+                </div>
+
+                <!-- Result Card -->
+                <div class="p-4 rounded-3 text-center mb-3" style="background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-color);">
+                    <small class="text-secondary text-uppercase fw-bold letter-spacing-1">Your Calculated BMI</small>
+                    <div class="display-3 fw-bold text-white my-1" id="bmiDisplayValue">
+                        {{ bmi_details.bmi if bmi_details else '24.2' }}
+                    </div>
+                    <div class="mb-3">
+                        <span id="bmiDisplayCategory" class="badge bg-{{ bmi_details.color if bmi_details else 'success' }} fs-6 px-3 py-2">
+                            {{ bmi_details.category if bmi_details else 'Normal weight' }}
+                        </span>
+                    </div>
+
+                    <!-- Visual BMI Bar -->
+                    <div class="bmi-meter-bar">
+                        <div id="bmiIndicator" class="bmi-meter-indicator" style="left: 45%;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted small mt-1">
+                        <span>Underweight (&lt;18.5)</span>
+                        <span>Normal (18.5 - 24.9)</span>
+                        <span>Overweight (25 - 29.9)</span>
+                        <span>Obese (&ge;30)</span>
+                    </div>
+                </div>
+
+                <!-- Healthy Weight Recommendation -->
+                <div class="p-3 rounded-3 mb-3 d-flex justify-content-between align-items-center" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-heart-pulse text-emerald fs-4"></i>
+                        <div>
+                            <span class="text-white small fw-bold d-block">Ideal Healthy Weight Range</span>
+                            <small class="text-secondary">Based on your entered height</small>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <span class="text-emerald fw-bold fs-6"><span id="minHealthyWeight">{{ bmi_details.min_healthy_weight if bmi_details else '53.5' }} kg</span> - <span id="maxHealthyWeight">{{ bmi_details.max_healthy_weight if bmi_details else '72.0' }} kg</span></span>
+                    </div>
+                </div>
+
+                <!-- Advice box -->
+                <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border-color);">
+                    <h6 class="text-white fw-bold mb-1"><i class="bi bi-lightbulb text-warning me-1"></i> Health Assessment</h6>
+                    <p class="text-secondary small mb-0" id="bmiDisplayAdvice">
+                        {{ bmi_details.advice if bmi_details else 'Maintain your active lifestyle and balanced nutrition.' }}
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right Column: WHO Table & Recent History -->
+        <div class="col-lg-5">
+            <!-- WHO Classification Table -->
+            <div class="card card-dark mb-4">
+                <div class="card-header card-header-dark">
+                    <span class="text-white fw-bold"><i class="bi bi-info-circle text-cyan me-2"></i> WHO BMI Classification</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark-custom mb-0">
+                            <thead>
+                                <tr><th>Category</th><th>BMI Range (kg/m²)</th><th>Health Risk</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><span class="badge bg-info text-dark">Underweight</span></td><td>&lt; 18.5</td><td class="text-secondary small">Nutritional deficiency</td></tr>
+                                <tr><td><span class="badge bg-success">Normal weight</span></td><td>18.5 – 24.9</td><td class="text-success small">Low risk</td></tr>
+                                <tr><td><span class="badge bg-warning text-dark">Overweight</span></td><td>25.0 – 29.9</td><td class="text-warning small">Moderate risk</td></tr>
+                                <tr><td><span class="badge bg-danger">Obesity</span></td><td>&ge; 30.0</td><td class="text-danger small">High risk</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User's BMI History (if logged in) -->
+            {% if user %}
+                <div class="card card-dark">
+                    <div class="card-header card-header-dark d-flex justify-content-between align-items-center">
+                        <span class="text-white fw-bold"><i class="bi bi-clock-history text-emerald me-2"></i> My Recent BMI Timeline</span>
+                        <a href="{{ url_for('weight.history') }}" class="btn btn-sm btn-outline-custom">All Logs</a>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if bmi_history %}
+                            <div class="table-responsive">
+                                <table class="table table-dark-custom mb-0">
+                                    <thead>
+                                        <tr><th>Date</th><th>Weight</th><th class="text-end">BMI</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for bh in bmi_history %}
+                                            <tr>
+                                                <td class="text-secondary small">{{ bh.date }}</td>
+                                                <td class="text-white">{{ bh.weight }} kg</td>
+                                                <td class="text-end fw-bold text-cyan">{{ bh.bmi or '--' }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <p class="text-secondary small mb-2">No weight logs to generate BMI timeline.</p>
+                                <a href="{{ url_for('weight.add') }}" class="btn btn-outline-custom btn-sm">Log Weight</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/bmi.js') }}"></script>
+{% endblock %}

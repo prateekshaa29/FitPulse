@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - FitPulse{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card card-dark p-4 p-md-5 shadow-lg border-highlight">
+                <div class="text-center mb-4">
+                    <div class="stat-icon mx-auto mb-3" style="width: 56px; height: 56px; font-size: 1.6rem;">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+                    <h3 class="fw-bold text-white mb-1">Create Your Account</h3>
+                    <p class="text-secondary small">Join FitPulse and start logging your workouts & progress</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('auth.register') }}" id="registerForm">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label form-label-dark">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-dark" id="name" name="name" value="{{ name or '' }}" placeholder="e.g. Sarah Jenkins" required minlength="2">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="role" class="form-label form-label-dark">Register As <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-dark" id="role" name="role" required>
+                                <option value="user" {% if not role or role == 'user' %}selected{% endif %}>Fitness Athlete / User</option>
+                                <option value="trainer" {% if role == 'trainer' %}selected{% endif %}>Certified Fitness Trainer</option>
+                                <option value="nutritionist" {% if role == 'nutritionist' %}selected{% endif %}>Clinical Nutritionist</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label form-label-dark">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control form-control-dark" id="email" name="email" value="{{ email or '' }}" placeholder="sarah@example.com" required>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="password" class="form-label form-label-dark">Password <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-dark" id="password" name="password" placeholder="Min 6 characters" required minlength="6">
+                                <button type="button" class="btn btn-outline-custom toggle-password-btn" data-target="password">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="confirm_password" class="form-label form-label-dark">Confirm Password <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="password" class="form-control form-control-dark" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required minlength="6">
+                                <button type="button" class="btn btn-outline-custom toggle-password-btn" data-target="confirm_password">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="gender" class="form-label form-label-dark">Gender</label>
+                            <select class="form-select form-select-dark" id="gender" name="gender">
+                                <option value="" {% if not gender %}selected{% endif %}>Select Gender</option>
+                                <option value="Male" {% if gender == 'Male' %}selected{% endif %}>Male</option>
+                                <option value="Female" {% if gender == 'Female' %}selected{% endif %}>Female</option>
+                                <option value="Other" {% if gender == 'Other' %}selected{% endif %}>Other</option>
+                                <option value="Prefer not to say" {% if gender == 'Prefer not to say' %}selected{% endif %}>Prefer not to say</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="age" class="form-label form-label-dark">Age (years)</label>
+                            <input type="number" class="form-control form-control-dark" id="age" name="age" value="{{ age or '' }}" placeholder="e.g. 28" min="5" max="120">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="height" class="form-label form-label-dark">Height (cm)</label>
+                            <input type="number" step="0.1" class="form-control form-control-dark" id="height" name="height" value="{{ height or '' }}" placeholder="e.g. 175" min="50" max="260">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="weight" class="form-label form-label-dark">Current Weight (kg)</label>
+                            <input type="number" step="0.1" class="form-control form-control-dark" id="weight" name="weight" value="{{ weight or '' }}" placeholder="e.g. 72.5" min="20" max="400">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-emerald w-100 py-2 mb-3">
+                        <i class="bi bi-check2-circle me-2"></i> Register Account
+                    </button>
+                </form>
+
+                <div class="text-center mt-3 pt-3 border-top" style="border-color: var(--border-color) !important;">
+                    <p class="text-secondary small mb-0">
+                        Already have an account? 
+                        <a href="{{ url_for('auth.login') }}" class="text-emerald fw-semibold text-decoration-none">Log In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
